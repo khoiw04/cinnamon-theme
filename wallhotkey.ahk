@@ -1,4 +1,4 @@
-﻿#Requires AutoHotkey v2
+#Requires AutoHotkey v2
 #SingleInstance Force
 SetWorkingDir A_ScriptDir
 ProcessSetPriority "Normal"
@@ -29,9 +29,9 @@ Config["OSD_Size"] := 350
 Config["OSD_Y"] := 80
 Config["OSD_Hold_Time"] := 150
 
-; --- NEW HOTKEYS ---
+; --- HOTKEYS ---
 Config["Key_Indi"] := "^!#i"   ; Win + Ctrl + Alt + I
-Config["Key_Next"] := "^'"     ; Ctrl + ' (Single Quote)
+Config["Key_Next"] := "^'"     ; Ctrl + '
 Config["Key_Prev"] := "^+'"    ; Ctrl + Shift + '
 Config["Key_Random"] := "^!r"  ; Ctrl + Alt + R
 Config["Key_Dual"] := "^!d"    ; Ctrl + Alt + D
@@ -64,6 +64,13 @@ global targetPath := ""
 global targetPath2 := ""
 global targetIsDual := false
 global myGui := ""
+
+; --- MEMORY CACHE (Global variables to store last applied state) ---
+global cache_R := -1
+global cache_G := -1
+global cache_B := -1
+global cache_Size := -1
+global cache_Type := -1
 
 if FileExist(Config["IniFile"]) {
     try {
@@ -154,10 +161,10 @@ BackgroundWork() {
         UpdateLockScreen_File(targetPath)
     }
     if (Config["Sync_Accent"]) {
-        ; Sync sequence to ensure color matches wallpaper
-        SetTimer(SyncColor_Advanced, -500)
-        SetTimer(SyncColor_Advanced, -1500)
-        SetTimer(SyncColor_Advanced, -3000)
+        ; Trigger sync checks
+        SetTimer(SyncColor_Smart, -500)
+        SetTimer(SyncColor_Smart, -1500)
+        SetTimer(SyncColor_Smart, -3000)
     }
     SaveSettings()
     SetTimer(HideOSD, -Config["OSD_Hold_Time"])
@@ -223,14 +230,33 @@ UpdateLockScreen_File(srcPath) {
     }
 }
 
-SyncColor_Advanced() {
-    global indicatorState
+SyncColor_Smart() {
+    global indicatorState, cache_R, cache_G, cache_B, cache_Size, cache_Type
     try {
         dwmMime := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "AccentColor")
         cleanBGR := Integer(dwmMime & 0xFFFFFF)
         blue := (cleanBGR >> 16) & 0xFF
         green := (cleanBGR >> 8) & 0xFF
         red := cleanBGR & 0xFF
+
+        ; === SMART CACHE CHECK (THE FIX) ===
+        ; If color has NOT changed, do NOT proceed. Saves CPU.
+        if (red == cache_R && green == cache_G && blue == cache_B) {
+            ; Color is same. Now check if Indicator state matches cache
+            mode := Integer(indicatorState)
+            targetSize := (mode == 2) ? 5 : 1
+            targetType := (mode == 0) ? 0 : 1
+
+            if (targetSize == cache_Size && targetType == cache_Type) {
+                return ; EVERYTHING IS SAME -> STOP EXECUTION IMMEDIATELY
+            }
+        }
+
+        ; If we are here, something changed. Update Cache.
+        cache_R := red
+        cache_G := green
+        cache_B := blue
+
         rgbStr := red . " " . green . " " . blue
 
         RegWrite(rgbStr, "REG_SZ", "HKEY_CURRENT_USER\Control Panel\Colors", "Hilight")
@@ -264,17 +290,19 @@ SyncColor_Advanced() {
 }
 
 ApplyIndicatorStrict(r, g, b) {
-    global indicatorState
+    global indicatorState, cache_Size, cache_Type
     cPath := "HKEY_CURRENT_USER\Software\Microsoft\Accessibility\CursorIndicator"
     mode := Integer(indicatorState)
 
+    ; === OFF MODE ===
     if (mode == 0) {
-        try {
-            if (RegRead(cPath, "IndicatorType") != 0) {
+        if (cache_Type != 0) { ; Only write if memory says it's not 0
+             try {
                 RegWrite(0, "REG_DWORD", cPath, "IndicatorType")
                 RefreshIndicator()
-            }
-        } catch {
+                cache_Type := 0
+             } catch {
+             }
         }
         return
     }
@@ -292,6 +320,8 @@ ApplyIndicatorStrict(r, g, b) {
     tSize := (mode == 2) ? 5 : 1
 
     changed := false
+
+    ; Write to registry only if needed (Double check with RegRead for safety)
     try {
         if (RegRead(cPath, "IndicatorSize", -1) != tSize) {
             RegWrite(tSize, "REG_DWORD", cPath, "IndicatorSize")
@@ -311,6 +341,10 @@ ApplyIndicatorStrict(r, g, b) {
     if (changed) {
         RefreshIndicator()
     }
+
+    ; Update Cache
+    cache_Size := tSize
+    cache_Type := 1
 }
 
 RefreshIndicator() {
@@ -359,7 +393,15 @@ ToggleIndicator() {
     global indicatorState
     indicatorState := (indicatorState + 1 > 2) ? 0 : indicatorState + 1
     SaveSettings()
-    SetTimer(SyncColor_Advanced, -10)
+
+    ; Reset cache to force update immediately
+    global cache_R, cache_G, cache_B
+    cache_R := -1
+    cache_G := -1
+    cache_B := -1
+
+    SetTimer(SyncColor_Smart, 10)
+
     stateText := (indicatorState == 0) ? "OFF" : (indicatorState == 1) ? "NORMAL" : "BIG"
     ShowOSD_New("", "Indicator: " stateText)
     SetTimer(HideOSD, -1000)
