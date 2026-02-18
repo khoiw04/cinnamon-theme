@@ -33,6 +33,9 @@ Config["OSD_Size"] := 350
 Config["OSD_Y"] := 80
 Config["OSD_Hold_Time"] := 150
 
+Config["Restart_App"] := "C:\Users\HiuKhoi\AppData\Local\FlowLauncher\Flow.Launcher.exe"
+; ------------------------------------------------------------------
+
 Config["Key_Indi"] := "^!#i"
 Config["Key_Next"] := "^'"
 Config["Key_Prev"] := "^+'"
@@ -165,6 +168,13 @@ BackgroundWork() {
         SetTimer(SyncColor_Smart, -1500)
         SetTimer(SyncColor_Smart, -3000)
     }
+
+    ; --- [LOGIC MỚI] Gọi hàm restart app ---
+    if (Config["Restart_App"] != "") {
+        SetTimer(RestartTargetApp, -800) ; Chạy sau 0.8s để đảm bảo màu đã đổi xong
+    }
+    ; ---------------------------------------
+
     SaveSettings()
     SetTimer(HideOSD, -Config["OSD_Hold_Time"])
 }
@@ -416,5 +426,23 @@ HideOSD() {
     if (IsSet(g_OSD) && g_OSD) {
         try g_OSD.Destroy()
         g_OSD := ""
+    }
+}
+
+; --- Hàm khởi động lại ứng dụng ---
+RestartTargetApp() {
+    targetApp := Config["Restart_App"]
+    if (targetApp == "" || !FileExist(targetApp))
+        return
+
+    SplitPath(targetApp, &exeName)
+
+    try {
+        if ProcessExist(exeName) {
+            ProcessClose(exeName)
+            Sleep(200) ; Đợi 0.2s để app tắt hẳn
+        }
+        Run(targetApp, , "Hide") ; Chạy lại
+    } catch {
     }
 }
