@@ -1,0 +1,58 @@
+watch_stylesheet: true
+watch_config: true
+debug: false
+bars:
+  primary-bar:
+    enabled: true
+    screens: ["*"]
+    class_name: "yasb-bar"
+    alignment:
+      position: "bottom"
+      center: false
+    blur_effect:
+      enabled: false
+      acrylic: false
+      dark_mode: true
+      round_corners: false
+      border_color: None
+    window_flags:
+      always_on_top: true
+      windows_app_bar: false
+      hide_on_fullscreen: false
+      auto_hide: false
+    dimensions:
+      width: "100%"
+      height: 24
+    padding:
+      top: 4
+      left: 4
+      bottom: 4
+      right: 12
+    layouts:
+      left:
+        alignment: "left"
+        stretch: true
+      center:
+        alignment: "center"
+        stretch: true
+      right:
+        alignment: "right"
+        stretch: true
+    widgets:
+      left: ["glazewm_workspaces"]
+widgets:
+  glazewm_workspaces:
+    type: "glazewm.workspaces.GlazewmWorkspacesWidget"
+    options:
+      hide_if_offline: true
+      hide_empty_workspaces: true
+      animation: true
+      app_icons:
+        enabled_populated: false
+        enabled_active: false
+        size: 16
+        max_icons: 9
+        hide_label: true
+        hide_duplicates: false
+        hide_floating: false
+
