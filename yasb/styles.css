@@ -1,0 +1,106 @@
+/* --- Root Variables (Colors) --- */
+:root {
+    /* --- Mica Inspired Color Variables --- */
+    --background-color: rgba(30, 34, 40, 0.7);
+    --foreground-color: rgb(237, 238, 240);
+    --border-color: rgb(53, 59, 69);
+    --accent-color: rgb(169, 174, 184);
+    --unactive-color: rgb(93, 114, 135);
+}
+* {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0);
+    font-weight: 600;
+    font-family: "Segoe UI", "JetBrainsMono NFP";
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.yasb-bar {
+    opacity: 0.4 !important;
+    pointer-events: none !important;
+}
+/* --- Workspace and Layout Containers --- */
+.apps-widget .widget-container,
+.komorebi-workspaces .widget-container,
+.komorebi-active-layout .widget-container,
+.glazewm-workspaces .widget-container,
+.glazewm-tiling-direction .widget-container {
+    background-color: var(--background-color);
+    border-radius: 12px;
+    padding: 0px 8px;
+    border: 1px solid var(--border-color);
+}
+
+/* --- Komorebi & GlazeWM Workspaces --- */
+.komorebi-workspaces,
+.glazewm-workspaces {
+    padding: 0;
+    opacity: 0.4 !important;
+    pointer-events: none !important;
+}
+
+.komorebi-workspaces .offline-status,
+.glazewm-workspaces .offline-status {
+    color: var(--foreground-color);
+    font-size: 12px;
+    padding: 0 4px;
+    font-weight: 600;
+}
+
+.komorebi-workspaces .ws-btn,
+.glazewm-workspaces .ws-btn {
+    color: transparent;
+    width: 10px;
+    height: 10px;
+    background-color: var(--unactive-color);
+    border-radius: 5px;
+    margin: 0 2px;
+    font-size: 1px;
+}
+
+.komorebi-workspaces .ws-btn:hover,
+.glazewm-workspaces .ws-btn:hover {
+    color: var(--accent-color);
+    background-color: var(--hover-color);
+}
+
+.komorebi-workspaces .ws-btn.populated,
+.glazewm-workspaces .ws-btn.populated {
+    width: 10px;
+    height: 10px;
+    background-color: var(--unactive-color);
+    border-radius: 5px;
+    margin: 0 2px;
+    font-size: 1px;
+}
+
+.komorebi-workspaces .ws-btn.active,
+.glazewm-workspaces .ws-btn.active_populated,
+.glazewm-workspaces .ws-btn.active_empty {
+    color: transparent;
+    background-color: var(--accent-color);
+    width: 36px;
+    height: 10px;
+    border-radius: 5px;
+}
+
+/* --- Glazewm Tiling Direction --- */
+.glazewm-tiling-direction {
+    background-color: transparent;
+    padding: 0;
+    margin: 4px 0;
+}
+
+.glazewm-tiling-direction .btn {
+    font-size: 14px;
+    width: 14px;
+    padding: 0 4px 0 12px;
+    color: var(--foreground-color);
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 2px;
+}
+
