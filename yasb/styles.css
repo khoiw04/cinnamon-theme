@@ -104,3 +104,61 @@
     margin: 0 2px;
 }
 
+/* --- Pomodoro Widget --- */
+.pomodoro-widget .widget-container {
+    background-color: var(--background-color);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 0px 10px;
+    border: 1px solid var(--border-color);
+    margin: 0 4px;
+}
+
+.pomodoro-widget .icon {
+    font-family:
+        "JetBrainsMono NF", "JetBrainsMono Nerd Font", "JetBrainsMonoNerdFont" !important;
+    font-size: 14px;
+    margin-right: 4px;
+    color: var(--foreground-color) !important;
+}
+
+.pomodoro-widget .label {
+    font-family: "Segoe UI" !important;
+    color: var(--foreground-color) !important;
+    font-size: 12px;
+}
+
+.pomodoro-widget .label.work,
+.pomodoro-widget .icon.work {
+    color: var(--accent-color) !important;
+}
+.pomodoro-widget .label.paused,
+.pomodoro-widget .icon.paused {
+    color: var(--unactive-color) !important;
+}
+
+.pomodoro-menu {
+    background-color: rgba(30, 34, 40, 0.6) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.pomodoro-menu .status,
+.pomodoro-menu .session {
+    color: var(--foreground-color) !important;
+}
+
+.pomodoro-menu .button {
+    background-color: var(--border-color);
+    color: var(--foreground-color) !important;
+    border-radius: 8px;
+    border: none;
+    padding: 5px 12px;
+}
+
+.pomodoro-menu .button:hover {
+    background-color: var(--accent-color);
+    color: var(--background-color) !important;
+}
