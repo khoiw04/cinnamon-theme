@@ -30,6 +30,7 @@ Config["PsScript"] := A_Temp "\ahk_worker.ps1"
 
 ; --- CẤU HÌNH YASB ---
 Config["YASB_CSS"] := "C:\Users\HiuKhoi\.config\yasb\styles.css"
+Config["YASB_Config"] := "C:\Users\HiuKhoi\.config\yasb\config.yaml"
 
 Config["Change_LockScreen"] := true
 Config["Sync_Accent"] := true
@@ -260,25 +261,42 @@ SyncColor_Smart() {
 UpdateYASB_CSS(r, g, b) {
     global Config
     cssPath := Config["YASB_CSS"]
-    if !FileExist(cssPath)
-        return
+    yamlPath := Config["YASB_Config"]
 
     bg_r := Round(r * 0.12), bg_g := Round(g * 0.12), bg_b := Round(b * 0.12)
     fg_r := Round(r * 0.2 + 204), fg_g := Round(g * 0.2 + 204), fg_b := Round(b * 0.2 + 204)
     bd_r := Round(r * 0.4), bd_g := Round(g * 0.4), bd_b := Round(b * 0.4)
     ua_r := Round(r * 0.4 + 77), ua_g := Round(g * 0.4 + 77), ua_b := Round(b * 0.4 + 77)
 
-    try {
-        cssText := FileRead(cssPath)
-        cssText := RegExReplace(cssText, "(--background-color:\s*)rgba\([^)]+\)", "$1rgba(" bg_r ", " bg_g ", " bg_b ", 0.7)")
-        cssText := RegExReplace(cssText, "(--foreground-color:\s*)rgb\([^)]+\)", "$1rgb(" fg_r ", " fg_g ", " fg_b ")")
-        cssText := RegExReplace(cssText, "(--border-color:\s*)rgb\([^)]+\)", "$1rgb(" bd_r ", " bd_g ", " bd_b ")")
-        cssText := RegExReplace(cssText, "(--accent-color:\s*)rgb\([^)]+\)", "$1rgb(" r ", " g ", " b ")")
-        cssText := RegExReplace(cssText, "(--unactive-color:\s*)rgb\([^)]+\)", "$1rgb(" ua_r ", " ua_g ", " ua_b ")")
+    hexAccent := Format("#{1:02X}{2:02X}{3:02X}", r, g, b)
+    hexBG := Format("#{1:02X}{2:02X}{3:02X}", bg_r, bg_g, bg_b)
+    hexUnactive := Format("#{1:02X}{2:02X}{3:02X}", ua_r, ua_g, ua_b)
 
-        fileObj := FileOpen(cssPath, "w")
-        fileObj.Write(cssText)
-        fileObj.Close()
+    try {
+        if FileExist(cssPath) {
+            cssText := FileRead(cssPath)
+            cssText := RegExReplace(cssText, "(--background-color:\s*)rgba\([^)]+\)", "$1rgba(" bg_r ", " bg_g ", " bg_b ", 0.7)")
+            cssText := RegExReplace(cssText, "(--foreground-color:\s*)rgb\([^)]+\)", "$1rgb(" fg_r ", " fg_g ", " fg_b ")")
+            cssText := RegExReplace(cssText, "(--border-color:\s*)rgb\([^)]+\)", "$1rgb(" bd_r ", " bd_g ", " bd_b ")")
+            cssText := RegExReplace(cssText, "(--accent-color:\s*)rgb\([^)]+\)", "$1rgb(" r ", " g ", " b ")")
+            cssText := RegExReplace(cssText, "(--unactive-color:\s*)rgb\([^)]+\)", "$1rgb(" ua_r ", " ua_g ", " ua_b ")")
+
+            fileObj := FileOpen(cssPath, "w")
+            fileObj.Write(cssText)
+            fileObj.Close()
+        }
+
+        if FileExist(yamlPath) {
+            yamlText := FileRead(yamlPath)
+
+            yamlText := RegExReplace(yamlText, "(circle_background_color:\s*)`"[^`"]+`"", "$1`"" hexBG "`"")
+            yamlText := RegExReplace(yamlText, "(circle_work_progress_color:\s*)`"[^`"]+`"", "$1`"" hexAccent "`"")
+            yamlText := RegExReplace(yamlText, "(circle_break_progress_color:\s*)`"[^`"]+`"", "$1`"" hexUnactive "`"")
+
+            fileYaml := FileOpen(yamlPath, "w")
+            fileYaml.Write(yamlText)
+            fileYaml.Close()
+        }
     } catch {
     }
 }
@@ -289,7 +307,6 @@ UpdateTackyBorders_Color(r, g, b) {
     if !FileExist(cfgPath)
         return
 
-    ; Tăng độ sáng bằng cách mix 60% màu trắng (có thể chỉnh tỷ lệ 0.4 và 0.6)
     br_r := Min(255, Round(r * 0.4 + 255 * 0.6))
     br_g := Min(255, Round(g * 0.4 + 255 * 0.6))
     br_b := Min(255, Round(b * 0.4 + 255 * 0.6))
@@ -299,7 +316,6 @@ UpdateTackyBorders_Color(r, g, b) {
     try {
         cfgText := FileRead(cfgPath)
 
-        ; Chỉ tìm và thay thế nội dung mảng của 'colors:' nằm dưới 'active_color:'
         cfgText := RegExReplace(cfgText, "(?m)^(\s*active_color:\s*\r?\n\s*colors:\s*)\[.*?\]", "$1[`"" hexColor "`", `"" hexColor "`"]")
 
         fileObj := FileOpen(cfgPath, "w")
@@ -521,4 +537,3 @@ RestartTackyBorders() {
     } catch {
     }
 }
-
