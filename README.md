@@ -79,8 +79,6 @@ But for the full Cinnamon experience (visual effects + smooth animations)
 
 <div align="center">
 
-Made with ♥ by [Khoi](https://blog.khoiwn04.com/en)!
-
-Readme.md is Inspired by [enscribe.dev](https://github.com/jktrn/enscribe.dev/)
+Made with ♥ by [Khoi](https://blog.khoiwn04.com/en)!. Readme.md is Inspired by [enscribe.dev](https://github.com/jktrn/enscribe.dev/)
 
 </div>
