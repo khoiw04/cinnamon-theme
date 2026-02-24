@@ -45,7 +45,7 @@ To run Cinnamon smoothly and keep everything fast, instant, and clean, here is t
 
 Some features of Cinnamon require stronger hardware to work properly.
 
-### Required for Full Experience
+### ⚠️ Required for Full Experience
 
 The following tools **require a dedicated GPU and minimum 16GB RAM**:
 
