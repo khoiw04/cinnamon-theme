@@ -21,6 +21,7 @@ This is a list of the various technologies used to build this theme:
 | Core       | [**GlazeWM**](https://github.com/glzr-io/glazewm) |
 | Core       | [**Flow Launcher**](https://flowlauncher.com/) |
 | Core       | [**FxSound**](https://www.fxsound.com/) |
+| Core       | [**Files 4.0**](https://files.community/) |
 | Decoration | [**MicaForEveryone**](https://github.com/MicaForEveryone/MicaForEveryone) |
 | Decoration | [**F.lux**](https://justgetflux.com/) |
 | Decoration | [**TranslucentTB**](https://apps.microsoft.com/detail/9pf4kz2vn4w9) |
