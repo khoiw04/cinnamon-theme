@@ -4,6 +4,10 @@
   (fn [_hwnd _uia _exe _desktop] false))
 
 (def my-hint (ui-hint/ui-hint jwno/context))
+(def UIA_ControlTypePropertyId 30003)
+(def UIA_ButtonControlTypeId 50000)
+(def UIA_CheckBoxControlTypeId 50002)
+(def UIA_HyperlinkControlTypeId 50005)
 
 (put my-hint :label-scale 0.7)
 
@@ -21,6 +25,12 @@
 (def km (in jwno/context :key-manager))
 (def root-keymap (:new-keymap km))
 
-(:define-key root-keymap "Win + J" [:ui-hint "ASDFGHJKL" (ui-hint/uia-hinter)])
+(:define-key root-keymap "Win + J" [:ui-hint "ASDFGHJKL"
+  (ui-hint/uia-hinter
+    :show-highlights true
+    :condition [:or
+                 [:property UIA_ControlTypePropertyId UIA_ButtonControlTypeId]
+                 [:property UIA_ControlTypePropertyId UIA_CheckBoxControlTypeId]
+                 [:property UIA_ControlTypePropertyId UIA_HyperlinkControlTypeId]])])
 
 (:set-keymap km root-keymap)
