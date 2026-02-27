@@ -27,6 +27,7 @@
 
 (:define-key root-keymap "Win + J" [:ui-hint "ASDFGHJKL"
   (ui-hint/uia-hinter
+    :action :click
     :show-highlights true
     :condition [:or
                  [:property UIA_ControlTypePropertyId UIA_ButtonControlTypeId]
