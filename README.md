@@ -19,6 +19,7 @@ This is a list of the various technologies used to build this theme:
 | Core       | [**Zen Browser**](https://zen-browser.app/) |
 | Core       | [**Zed Editor**](https://zed.dev/) |
 | Core       | [**GlazeWM**](https://github.com/glzr-io/glazewm) |
+| Core       | [**Jwno/ui-hint**](https://agent-kilo.github.io/jwno/ref/built-in-modules/jwno--ui-hint.html) |
 | Core       | [**Flow Launcher**](https://flowlauncher.com/) |
 | Core       | [**FxSound**](https://www.fxsound.com/) |
 | Core       | [**Files 4.0**](https://files.community/) |
