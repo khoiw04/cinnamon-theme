@@ -26,23 +26,24 @@
 (def km (in jwno/context :key-manager))
 (def root-keymap (:new-keymap km))
 
+(def super-clean-filter
+  [:and
+    [:not [:property UIA_ControlTypePropertyId UIA_TextControlTypeId]]
+    [:not [:property UIA_ControlTypePropertyId UIA_DocumentControlTypeId]]
+    [:not [:property UIA_ControlTypePropertyId UIA_PaneControlTypeId]]
+    [:not [:property UIA_ControlTypePropertyId UIA_ImageControlTypeId]]
+    [:or
+      [:property UIA_ControlTypePropertyId UIA_ButtonControlTypeId]
+      [:property UIA_ControlTypePropertyId UIA_CheckBoxControlTypeId]
+      [:property UIA_ControlTypePropertyId UIA_HyperlinkControlTypeId]
+      [:and
+        [:property UIA_IsInvokePatternAvailablePropertyId true]
+        [:property UIA_IsKeyboardFocusablePropertyId true]]]])
+
 (:define-key root-keymap "Win + J" [:ui-hint "ASDFGHJKL"
-  (ui-hint/uia-hinter
-    :action :click
-    :show-highlights true
-    :condition [:and
-                 [:not [:property UIA_ControlTypePropertyId UIA_TextControlTypeId]]
-                 [:not [:property UIA_ControlTypePropertyId UIA_DocumentControlTypeId]]
-                 [:not [:property UIA_ControlTypePropertyId UIA_PaneControlTypeId]]
-                 [:not [:property UIA_ControlTypePropertyId UIA_ImageControlTypeId]]
+  (ui-hint/uia-hinter :action :click :show-highlights true :condition super-clean-filter)])
 
-                 [:or
-                   [:property UIA_ControlTypePropertyId UIA_ButtonControlTypeId]
-                   [:property UIA_ControlTypePropertyId UIA_CheckBoxControlTypeId]
-                   [:property UIA_ControlTypePropertyId UIA_HyperlinkControlTypeId]
-
-                   [:and
-                     [:property UIA_IsInvokePatternAvailablePropertyId true]
-                     [:property UIA_IsKeyboardFocusablePropertyId true]]]])])
+(:define-key root-keymap "Win + Shift + J" [:ui-hint "ASDFGHJKL"
+  (ui-hint/uia-hinter :action :right-click :show-highlights true :condition super-clean-filter)])
 
 (:set-keymap km root-keymap)
